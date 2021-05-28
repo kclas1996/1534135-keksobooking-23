@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг»
 
 * Студент: [Ksenia Laskutova](https://up.htmlacademy.ru/javascript/23/user/1534135).
-* Наставник: `Неизвестно`.
+* Наставник:[Александр Григорьев](https://htmlacademy.ru/profile/fuckhtml).
 
 ---
 

@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
+  <link rel="stylesheet" href="css/leaflet.css">
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
@@ -10,6 +11,10 @@
 <body>
 
   <main>
+    <div class="error-message hidden">
+      <span class="error-message__text">При загрузке данных произошла ошибка</span>
+    </div>
+
     <div class="promo">
       <h1 class="promo__title visually-hidden">Keksobooking. Кексы по соседству</h1>
       <img src="img/keksobooking.svg" alt="Keksobooking. Кексы по соседству" width="215" height="45">
@@ -23,7 +28,7 @@
 
       <!-- Фильтрация объявлений -->
       <div class="map__filters-container">
-        <form action="#" class="map__filters" autocomplete="off">
+        <form action="https://23.javascript.pages.academy/keksobooking" method="POST" enctype="multipart/form-data" class="map__filters" autocomplete="off">
           <select name="housing-type" id="housing-type" class="map__filter">
             <option value="any" selected>Любой тип жилья</option>
             <option value="bungalow">Бунгало</option>
@@ -71,7 +76,7 @@
     <!-- Форма объявления -->
     <section class="notice">
       <h2 class="notice__title">Ваше объявление</h2>
-      <form class="ad-form" method="post" enctype="multipart/form-data" autocomplete="off">
+      <form class="ad-form" method="post" action="https://23.javascript.pages.academy/keksobooking" enctype="multipart/form-data" autocomplete="off">
         <fieldset class="ad-form-header">
           <legend class="ad-form-header__title">Ваша фотография (для карты)</legend>
           <div class="ad-form-header__upload">
@@ -79,7 +84,7 @@
               <img src="img/muffin-grey.svg" alt="Аватар пользователя" width="40" height="44">
             </div>
             <div class="ad-form__field">
-              <input type="file" id="avatar" name="avatar" class="ad-form-header__input visually-hidden">
+              <input type="file" id="avatar" name="avatar" class="ad-form-header__input visually-hidden" accept="image/png, image/jpeg">
               <label class="ad-form-header__drop-zone" for="avatar">Загрузить<br>фото...</label>
             </div>
             <p class="ad-form-header__info">Заполните все обязательные поля, назначьте цену, загрузите аватар и фото жилья. Придумайте интересное описание. Оно сделает объявление более живым и привлекательным. Получившееся объявление должно давать гостям полное представление о вашем жилье.</p>
@@ -87,7 +92,7 @@
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--wide">
           <label class="ad-form__label" for="title">Заголовок объявления</label>
-          <input id="title" name="title" type="text" placeholder="Милая, уютная квартирка в центре Токио">
+          <input id="title" name="title" type="text" placeholder="Милая, уютная квартирка в центре Токио" required minlength="30" maxlength="100">
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--wide">
           <label class="ad-form__label" for="address">Адрес (координаты)</label>
@@ -105,7 +110,7 @@
         </fieldset>
         <fieldset class="ad-form__element">
           <label class="ad-form__label" for="price">Цена за ночь, руб.</label>
-          <input id="price" name="price" type="number" placeholder="5000">
+          <input id="price" name="price" type="number" placeholder="1000" required min="1000" max="1000000">
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--time">
           <label class="ad-form__label" for="timein">Время заезда и выезда</label>
@@ -132,9 +137,9 @@
         <fieldset class="ad-form__element">
           <label class="ad-form__label" for="capacity">Количество мест</label>
           <select id="capacity" name="capacity">
-            <option value="3" selected>для 3 гостей</option>
+            <option value="3">для 3 гостей</option>
             <option value="2">для 2 гостей</option>
-            <option value="1">для 1 гостя</option>
+            <option value="1" selected>для 1 гостя</option>
             <option value="0">не для гостей</option>
           </select>
         </fieldset>
@@ -161,7 +166,7 @@
           <label class="ad-form__label">Фотография жилья</label>
           <div class="ad-form__photo-container">
             <div class="ad-form__upload">
-              <input type="file" id="images" name="images" class="ad-form__input visually-hidden">
+              <input type="file" id="images" name="images" class="ad-form__input visually-hidden" accept="image/png, image/jpeg">
               <label for="images" class="ad-form__drop-zone">Загрузить<br>фото...</label>
             </div>
             <div class="ad-form__photo"></div>
@@ -169,7 +174,7 @@
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--submit">
           <button class="ad-form__submit" type="submit">Опубликовать</button>
-          или <button class="ad-form__reset" type="reset">очистить</button>
+          или <button class="ad-form__reset" type="button">очистить</button>
         </fieldset>
       </form>
     </section>
@@ -193,7 +198,7 @@
   <!-- Карточка объявления -->
   <template id="card">
     <article class="popup">
-      <img src="img/avatars/user01.png" class="popup__avatar" width="70" height="70" alt="Аватар пользователя">
+      <img src="img/avatars/default.png" class="popup__avatar" width="70" height="70" alt="Аватар пользователя">
       <h3 class="popup__title">Уютное гнездышко для молодоженов</h3>
       <p class="popup__text popup__text--address">102-0082 Tōkyō-to, Chiyoda-ku, Ichibanchō, 14−3</p>
       <p class="popup__text popup__text--price">5200 <span>₽/ночь</span></p>
@@ -216,21 +221,19 @@
   </template>
 
   <!-- Сообщение об успешном создании объявления -->
-  <template id="success">
-    <div class="success">
-      <p class="success__message">Ваше объявление<br>успешно размещено!</p>
-    </div>
-  </template>
+  <div class="success hidden">
+    <p class="success__message">Ваше объявление<br>успешно размещено!</p>
+  </div>
 
   <!-- Сообщение об ошибке создания объявления -->
-  <template id="error">
-    <div class="error">
+  <div class="error hidden">
       <p class="error__message">Ошибка размещения объявления</p>
       <button type="button" class="error__button">Попробовать снова</button>
-    </div>
-  </template>
 
-  <script src="js/main.js"></script>
-  <script src="https://lodash.com/docs/4.17.15#random"></script>
+  </div>
+  <script src="js/leaflet.js"></script>
+  <script src="js/main.js" type="module"></script>
+
+
 </body>
 </html>

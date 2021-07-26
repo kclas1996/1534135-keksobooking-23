@@ -1,28 +1,34 @@
-// Результат: целое число из диапазона "от...до"
- function getRandomIntInclusive(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  if((min<=max) && (min,max>=0) && (min % 1 === 0) && (max % 1 === 0)) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  } else {
-    throw new Error('В качестве аргументов используются только целые числа');
-  }
+
+import { deactivateApp } from './deactivate-app.js';
+import { activateAdForm, activateMapForm, setAdFormSubmit } from './ad-form.js';
+import { map, MAP_COORDS_DEFAULT, MAP_ZOOM_DEFAULT } from './map.js';
+import { showErrorPopup, showSuccessPopup } from './util.js';
+import { getData } from './api.js';
+import { renderMarkers } from './filters.js';
+import './img.js';
+
+const onDataFail = () => {
+  document.querySelector('.error-message').classList.remove('hidden');
 }
 
-//console.log(getRandomIntInclusive(0,10));
-
-
-function getRandomFloat(min, max, n) {
-  if((min<=max) && (min,max>=0)) {
-    return (min + (Math.random() * (max - min))).toFixed(n);
-  } else {
-    return('Неверный диапазон чисел');
-  }
+const onDataSuccess = (properties) => {
+  renderMarkers(properties);
+  activateMapForm();
 }
-console.log(getRandomFloat(1.2353474848, 2.4787559, 3));
- 
-/*
-В файле main.js на основе написанных в прошлом задании вспомогательных функций напишите необходимые функции для создания массива из 10 сгенерированных JS-объектов. Каждый объект массива — описание похожего объявления неподалёку.
+
+
+deactivateApp();
+
+
+map.on('load', () => {
+  activateAdForm();
+  setAdFormSubmit(showSuccessPopup, showErrorPopup);
+  getData(onDataSuccess, onDataFail);
+}).setView(
+  MAP_COORDS_DEFAULT,
+  MAP_ZOOM_DEFAULT
+);
+
 
 Структура каждого объекта должна быть следующей:
 

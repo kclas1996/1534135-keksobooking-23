@@ -9,7 +9,7 @@ const MAP_COORDS_DEFAULT = {
   lng: 139.69171,
 };
 const MAP_ZOOM_DEFAULT = 12;
-const MAX_properties = 10;
+const MAX_PROPERTIES = 10;
 const FLOAT_NUMBER = 5;
 const LAYER_TEMPLATE = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
@@ -72,15 +72,14 @@ const createMarker = (property) => {
 const createMarkers = (properties) => {
   markerGroup.clearLayers();
   properties
-    .slice(0, MAX_properties)
+    .slice(0, MAX_PROPERTIES)
     .forEach((property) => {
       createMarker(property);
     });
-}
+};
 
-const getLatLngString = (latLng) => {
-  return `${latLng.lat.toFixed(FLOAT_NUMBER)} ${latLng.lng.toFixed(FLOAT_NUMBER)}`;
-}
+const getLatLngString = (latLng) => `${latLng.lat.toFixed(FLOAT_NUMBER)} ${latLng.lng.toFixed(FLOAT_NUMBER)}`;
+
 
 adAddressInput.value = getLatLngString(mainPinMarker.getLatLng());
 
@@ -90,7 +89,7 @@ const resetMap = () => {
   map.setView(MAP_COORDS_DEFAULT, MAP_ZOOM_DEFAULT);
 
   adAddressInput.value = getLatLngString(mainPinMarker.getLatLng());
-}
+};
 
 mainPinMarker.on('moveend', () => {
   adAddressInput.value = getLatLngString(mainPinMarker.getLatLng());
